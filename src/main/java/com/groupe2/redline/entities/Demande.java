@@ -8,7 +8,6 @@ import java.sql.Date;
 public class Demande {
     @Id
     @GeneratedValue
-    @Column(name = "id")
     private Long id;
     @Column(name = "nom_demandeur")
     private String nomDemandeur;
