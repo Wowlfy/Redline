@@ -11,7 +11,7 @@ public class Demande {
     @Column(name = "id")
     private Long id;
     @Column(name = "nom_demandeur")
-    private String nom_demandeur;
+    private String nomDemandeur;
     @Column(name = "email")
     private String email;
     @Column(name = "duree")
