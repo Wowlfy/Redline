@@ -7,7 +7,6 @@ public class Salle implements Serializable {
 
         @Id
         @GeneratedValue
-        @Column(name = "id")
         private Long id;
         @Column(name = "libelle")
         private String libelle;
