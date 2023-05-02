@@ -25,6 +25,8 @@ public class Demande {
     private String description;
     @Column(name = "traitee")
     private Boolean traitee;
+    @OneToOne
+    @JoinColumn(name="ClassA_Id", referencedColumnName="ClassB_Id", nullable=true)
 
     public Long getId() {
         return id;

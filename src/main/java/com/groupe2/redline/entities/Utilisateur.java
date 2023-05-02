@@ -3,6 +3,7 @@ package com.groupe2.redline.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "utilisateur")
@@ -20,6 +21,9 @@ public class Utilisateur implements Serializable {
 
     @Column(name = "mot_de_passe")
     private String motDePasse;
+
+    @OneToMany(mappedBy = "utilisateur")
+    private Set<Reservation> reservations;
 
     public Long getId() {
         return id;

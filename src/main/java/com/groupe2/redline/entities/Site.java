@@ -2,6 +2,8 @@ package com.groupe2.redline.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "site")
 public class Site {
@@ -9,6 +11,8 @@ public class Site {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "site")
+    private Set<Salle> salles;
 
     @Column(name = "libelle")
     private String libelle;
