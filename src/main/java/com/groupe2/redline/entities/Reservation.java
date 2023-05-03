@@ -19,8 +19,6 @@ public class Reservation implements Serializable {
     @Column(name = "creneau")
     private int creneau;
 
-    @Column(name = "valide")
-    private boolean valide;
 
     @ManyToOne
     @JoinColumn(name = "id_salle")
@@ -55,11 +53,4 @@ public class Reservation implements Serializable {
         this.creneau = creneau;
     }
 
-    public boolean isValide() {
-        return valide;
-    }
-
-    public void setValide(boolean valide) {
-        this.valide = valide;
-    }
 }
