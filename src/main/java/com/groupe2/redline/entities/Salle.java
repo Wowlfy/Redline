@@ -61,4 +61,8 @@ public class Salle implements Serializable {
         public void setActif(boolean actif) {
                 this.actif = actif;
         }
+
+        public void setSite(Site site) {
+                this.site = site;
+        }
 }
