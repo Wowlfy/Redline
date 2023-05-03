@@ -25,7 +25,6 @@ public class Reservation implements Serializable {
     @JoinColumn(name = "id_salle")
     private Salle salle;
 
-    @ManyToOne
     @JoinColumn(name = "id_utilisateur")
 
     @OneToOne
