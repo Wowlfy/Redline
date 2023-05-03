@@ -16,6 +16,10 @@ public class Salle implements Serializable {
         private String adresse;
         @Column(name = "description")
         private String description;
+
+        @Column(name = "nb_places")
+        private int nbPlaces;
+
         @Column(name = "actif")
         private boolean actif;
 
