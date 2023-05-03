@@ -1,4 +1,5 @@
 package com.groupe2.redline.controllers;
+
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.services.SalleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,21 +12,19 @@ import java.util.List;
 @RequestMapping("/api/salle")
 
 public class SalleController {
+
     @Autowired
     private SalleService salleService;
 
-    public SalleController(SalleService salleService) {
-        this.salleService = salleService;
-    }
     @GetMapping("/get")
     public ResponseEntity<List<Salle>> getSalles() {
         List<Salle> salles = this.salleService.getAllSalles();
         return ResponseEntity.ok(salles);
     }
     @PostMapping("/add")
-    public String addSalle(@RequestBody Salle salle) {
-        return salleService.addSalle(salle);
-
+    public ResponseEntity<Salle> addSalle(@RequestBody Salle salle) {
+        this.salleService.addSalle(salle);
+        return ResponseEntity.ok(salle);
     }
     @GetMapping("/get/{id}")
     public String getSalleById(@PathVariable Long id){return "le fichier a bien été obtenu";}
