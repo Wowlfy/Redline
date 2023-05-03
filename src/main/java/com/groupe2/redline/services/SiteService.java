@@ -22,4 +22,10 @@ public class SiteService {
         List<Site> sites = this.siteRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
         return sites;
     }
+
+    public Site addSite(Site site) {
+        //TODO Gestion des erreurs
+        Site savedSite = this.siteRepository.save(site);
+        return savedSite;
+    }
 }
