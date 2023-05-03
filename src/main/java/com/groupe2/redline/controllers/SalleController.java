@@ -1,6 +1,5 @@
 package com.groupe2.redline.controllers;
 
-import com.groupe2.redline.entities.Demande;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.services.SalleService;
@@ -57,23 +56,24 @@ public class SalleController {
     @PostMapping("/get/{id}/reserver")
     public ResponseEntity<String> reserver(@PathVariable Long id, @RequestParam Date date, @RequestParam int creneau, @RequestParam Long idUtilisateur) {
         // TODO Associer à une demande (argument optionnel)
-
         // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
+
+        // Récupérer les entités mentionnées dans la requête
+        Optional<Salle> salle = salleService.findById(id);
         Optional<Utilisateur> auteur = utilisateurService.findById(idUtilisateur);
 
-        Optional<Salle> salle = salleService.findById(id);
 
+        // Contrôler les informations fournies, et tenter d'enregistrer la réservation
         if (salle.isPresent()) {
             if (auteur.isPresent()) {
+                // La requête est ok, tenter de réserver
                 if (salleService.reserver(salle.get(), date, creneau, auteur.get())) {
                     return ResponseEntity.status(201).body("Réservation enregistrée.");
                 }
                 return ResponseEntity.status(400).body("Une réservation existe déjà sur ce créneau.");
             }
             return ResponseEntity.status(404).body("L'utilisateur spécifié n'existe pas.");
-
         }
         return ResponseEntity.status(404).body("La salle spécifiée n'existe pas.");
     }
-
 }

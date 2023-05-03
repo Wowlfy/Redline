@@ -41,21 +41,32 @@ public class SalleService {
         return null;
     }
 
-    public boolean reserver(Salle salle, Date date, int creneau, Utilisateur utilisateur) {
+    /**
+     * Tente d'enregistrer une réservation
+     * @param salle La salle concernée
+     * @param date La date à laquelle réserver la salle
+     * @param creneau Le créneau sur lequel réserver la salle
+     * @param auteur L'auteur de la réservation
+     * @return Si la réservation a été enregistrée.
+     */
+    public boolean reserver(Salle salle, Date date, int creneau, Utilisateur auteur) {
+        // Vérifier qu'une réservation similaire n'existe pas déjà
         Reservation nouvelleReservation = new Reservation();
         nouvelleReservation.setSalle(salle);
         nouvelleReservation.setDate(date);
         nouvelleReservation.setCreneau(creneau);
-        nouvelleReservation.setUtilisateur(utilisateur);
+
         ExampleMatcher exampleMatcher = ExampleMatcher.matching();
         Example<Reservation> example = Example.of(nouvelleReservation, exampleMatcher);
-
         boolean creneauDisponible = !reservationRepository.exists(example);
 
         if (creneauDisponible) {
+            nouvelleReservation.setUtilisateur(auteur);
             reservationRepository.saveAndFlush(nouvelleReservation);
+            // Vrai : La réservation a bien été enregistrée
             return true;
         } else {
+            // Faux : La réservation n'a pas été enregistrée, car une autre réservation existe déjà sur ce créneau
             return false;
         }
     }
