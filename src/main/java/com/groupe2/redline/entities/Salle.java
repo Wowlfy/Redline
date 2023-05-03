@@ -16,6 +16,34 @@ public class Salle implements Serializable {
         private String adresse;
         @Column(name = "description")
         private String description;
+
+        @Column(name = "nb_places")
+        private int nbPlaces;
+
+        public int getNbPlaces() {
+                return nbPlaces;
+        }
+
+        public void setNbPlaces(int nbPlaces) {
+                this.nbPlaces = nbPlaces;
+        }
+
+        public Site getSite() {
+                return site;
+        }
+
+        public void setSite(Site site) {
+                this.site = site;
+        }
+
+        public Set<Reservation> getReservations() {
+                return reservations;
+        }
+
+        public void setReservations(Set<Reservation> reservations) {
+                this.reservations = reservations;
+        }
+
         @Column(name = "actif")
         private boolean actif;
 
