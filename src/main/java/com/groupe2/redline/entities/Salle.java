@@ -12,8 +12,6 @@ public class Salle implements Serializable {
         private Long id;
         @Column(name = "libelle")
         private String libelle;
-        @Column(name = "adresse")
-        private String adresse;
         @Column(name = "description")
         private String description;
 
@@ -66,13 +64,6 @@ public class Salle implements Serializable {
                 this.libelle = libelle;
         }
 
-        public String getAdresse() {
-                return adresse;
-        }
-
-        public void setAdresse(String adresse) {
-                this.adresse = adresse;
-        }
 
         public String getDescription() {
                 return description;
