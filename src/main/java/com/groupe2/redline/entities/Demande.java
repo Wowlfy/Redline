@@ -25,6 +25,7 @@ public class Demande {
     private String description;
     @Column(name = "traitee")
     private Boolean traitee;
+
     @OneToOne(mappedBy = "demande")
     private Reservation reservation;
 
