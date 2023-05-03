@@ -1,22 +1,31 @@
 package com.groupe2.redline.controllers;
+import com.groupe2.redline.entities.Salle;
+import com.groupe2.redline.services.SalleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/salles")
+@RequestMapping("/api/salle")
 
 public class SalleController {
     @Autowired
     private SalleService salleService;
 
+    public SalleController(SalleService salleService) {
+        this.salleService = salleService;
+    }
     @GetMapping("/get")
-    public List<Salle> getSalles() {
-        return null ;
+    public ResponseEntity<List<Salle>> getSalles() {
+        List<Salle> salles = this.salleService.getAllSalles();
+        return ResponseEntity.ok(salles);
     }
     @PostMapping("/add")
     public String addSalle(@RequestBody Salle salle) {
         return salleService.addSalle(salle);
-        //TODO améliorer avec un response entity
+
     }
     @GetMapping("/get/{id}")
     public String getSalleById(@PathVariable Long id){return "le fichier a bien été obtenu";}
