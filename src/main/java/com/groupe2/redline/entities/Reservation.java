@@ -22,12 +22,21 @@ public class Reservation implements Serializable {
     @Column(name = "valide")
     private boolean valide;
 
+    @ManyToOne
+    @JoinColumn(name = "id_salle")
+    private Salle salle;
+
+    @ManyToOne
+    @JoinColumn(name = "id_utilisateur")
+    private Utilisateur utilisateur;
+
+    @OneToOne
+    @JoinColumn(name="id_demande", referencedColumnName="id", nullable=true)
+    private Demande demande;
+
+
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Date getDate() {

@@ -1,17 +1,17 @@
 package com.groupe2.redline.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "utilisateur")
 public class Utilisateur implements Serializable {
 
-    @Column(name = "id")
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "nom")
     private String nom;
@@ -20,5 +20,37 @@ public class Utilisateur implements Serializable {
     private String mail;
 
     @Column(name = "mot_de_passe")
-    private String mot_de_passe;
+    private String motDePasse;
+
+    @OneToMany(mappedBy = "utilisateur")
+    private Set<Reservation> reservations;
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
 }
