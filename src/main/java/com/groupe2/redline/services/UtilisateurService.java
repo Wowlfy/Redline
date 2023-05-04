@@ -1,7 +1,7 @@
 package com.groupe2.redline.services;
 
 import com.groupe2.redline.entities.Utilisateur;
-import com.groupe2.redline.repository.UtilisateurRepository;
+import com.groupe2.redline.repositories.UtilisateurRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

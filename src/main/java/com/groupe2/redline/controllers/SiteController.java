@@ -1,6 +1,6 @@
 package com.groupe2.redline.controllers;
 
-import com.groupe2.redline.controllers.dto.SiteDTO;
+import com.groupe2.redline.dto.SiteDto;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.exceptions.SiteDejaActifException;
 import com.groupe2.redline.exceptions.SiteDejaInactifException;
@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,10 @@ import java.util.List;
 @RequestMapping("/api/site")
 public class SiteController {
 
+
+    @Autowired
     private SiteService siteService;
 
-    public SiteController(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Site>> getSites() {
@@ -49,7 +49,7 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/get/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody SiteDTO siteDTO) throws EntityNotFoundException {
+    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody SiteDto siteDTO) throws EntityNotFoundException {
         return new ResponseEntity<>(siteService.editSite(id, siteDTO), HttpStatus.OK);
     }
 

@@ -1,4 +1,4 @@
-package com.groupe2.redline.repository;
+package com.groupe2.redline.repositories;
 
 import com.groupe2.redline.entities.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;

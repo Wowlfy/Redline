@@ -1,11 +1,8 @@
 package com.groupe2.redline.controllers;
 
-import com.groupe2.redline.dto.salle.SalleDto;
+import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Salle;
-import com.groupe2.redline.entities.Site;
-import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.services.SalleService;
-import com.groupe2.redline.services.UtilisateurService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -13,7 +10,6 @@ import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 
 import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.exceptions.SiteInactifException;
-import com.groupe2.redline.services.SalleService;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +26,9 @@ import java.util.Optional;
 @RequestMapping("/api/salle")
 
 public class SalleController {
+
     @Autowired
     private SalleService salleService;
-
-    public SalleController(SalleService salleService) {
-        this.salleService = salleService;
-    }
 
     @GetMapping("/get")
     public ResponseEntity<List<Salle>> getSalles() {

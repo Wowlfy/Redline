@@ -1,9 +1,9 @@
 package com.groupe2.redline.mappers;
 
-import com.groupe2.redline.dto.salle.SalleDto;
+import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Site;
-import com.groupe2.redline.repository.SiteRepository;
+import com.groupe2.redline.repositories.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class SalleDtoMapper {
+public class SalleMapper {
 
     @Autowired
     private SiteRepository siteRepository;
+
     public Salle salleFromDto(SalleDto salleDto) throws EntityNotFoundException {
         Salle nouvelleSalle = new Salle();
         nouvelleSalle.setLibelle(salleDto.getLibelle());

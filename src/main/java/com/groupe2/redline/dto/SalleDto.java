@@ -1,21 +1,11 @@
-package com.groupe2.redline.controllers.dto;
+package com.groupe2.redline.dto;
 
-import com.groupe2.redline.entities.Salle;
-
-import java.util.List;
-
-public class SiteDTO {
-
+public class SalleDto {
     private String libelle;
-
     private String description;
+    private Integer nbPlaces;
+    private Long siteId;
 
-    private String adresse;
-
-
-    public SiteDTO() {
-
-    }
 
     public String getLibelle() {
         return libelle;
@@ -33,12 +23,19 @@ public class SiteDTO {
         this.description = description;
     }
 
-    public String getAdresse() {
-        return adresse;
+    public Integer getNbPlaces() {
+        return nbPlaces;
     }
 
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
+    public void setNbPlaces(Integer nbPlaces) {
+        this.nbPlaces = nbPlaces;
     }
 
+    public Long getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(Long siteId) {
+        this.siteId = siteId;
+    }
 }
