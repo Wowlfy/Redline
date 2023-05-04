@@ -5,6 +5,7 @@ import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 import com.groupe2.redline.exceptions.SalleInactiveException;
+import com.groupe2.redline.exceptions.SiteInactifException;
 import com.groupe2.redline.repository.ReservationRepository;
 import com.groupe2.redline.repository.SalleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -56,7 +57,7 @@ public class SalleService {
      * @param creneau Le créneau sur lequel réserver la salle
      * @param idAuteur L'id de l'utilisateur effectuant la réservation
      */
-    public void reserver(Long idSalle, Date date, int creneau, Long idAuteur) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException {
+    public void reserver(Long idSalle, Date date, int creneau, Long idAuteur) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException, SiteInactifException {
         // Récupérer les entités mentionnées dans la requête
         Optional<Salle> salleOptional = findById(idSalle);
         Optional<Utilisateur> auteurOptional = utilisateurService.findById(idAuteur);
@@ -72,10 +73,14 @@ public class SalleService {
         Salle salle = salleOptional.get();
         Utilisateur auteur = auteurOptional.get();
 
-        // Vérifier que la salle est active
+        // Vérifier que la salle et le site sont actifs
         if (!salle.isActif()) {
             throw new SalleInactiveException();
         }
+        if (!salle.getSite().isActif()) {
+            throw new SiteInactifException();
+        }
+
         // Vérifier qu'une réservation similaire n'existe pas déjà
         Reservation nouvelleReservation = new Reservation();
         nouvelleReservation.setSalle(salle);
