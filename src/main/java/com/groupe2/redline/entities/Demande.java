@@ -1,7 +1,7 @@
 package com.groupe2.redline.entities;
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "demande")
@@ -28,6 +28,10 @@ public class Demande {
 
     @OneToOne(mappedBy = "demande")
     private Reservation reservation;
+
+    public Demande() {
+        this.traitee = false;
+    }
 
     public Long getId() {
         return id;
