@@ -1,5 +1,6 @@
 package com.groupe2.redline.controllers;
 
+import com.groupe2.redline.controllers.dto.SiteDTO;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.exceptions.SiteDejaActifException;
 import com.groupe2.redline.exceptions.SiteDejaInactifException;
@@ -48,8 +49,8 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/get/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody Site site) throws EntityNotFoundException {
-        return new ResponseEntity<>(siteService.editSite(id, site), HttpStatus.OK);
+    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody SiteDTO siteDTO) throws EntityNotFoundException {
+        return new ResponseEntity<>(siteService.editSite(id, siteDTO), HttpStatus.OK);
     }
 
     @PatchMapping("/get/{id}/activer")
