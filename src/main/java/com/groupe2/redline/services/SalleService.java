@@ -5,6 +5,7 @@ import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.repository.ReservationRepository;
 import com.groupe2.redline.repository.SalleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -69,5 +70,16 @@ public class SalleService {
             // Faux : La réservation n'a pas été enregistrée, car une autre réservation existe déjà sur ce créneau
             return false;
         }
+    }
+
+    public Salle editSalle(Long id, Salle salle) {
+        Salle existingSalle = salleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Salle not found with id " + id));
+
+        existingSalle.setLibelle(salle.getLibelle());
+        existingSalle.setDescription(salle.getDescription());
+        existingSalle.setNbPlaces(salle.getNbPlaces());
+
+        return salleRepository.save(existingSalle);
     }
 }
