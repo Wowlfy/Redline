@@ -103,4 +103,15 @@ public class SalleService {
         salleRepository.saveAndFlush(salle);
         return true;
     }
+
+    public Salle editSalle(Long id, Salle salle) {
+        Salle existingSalle = salleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Salle not found with id " + id));
+
+        existingSalle.setLibelle(salle.getLibelle());
+        existingSalle.setDescription(salle.getDescription());
+        existingSalle.setNbPlaces(salle.getNbPlaces());
+
+        return salleRepository.save(existingSalle);
+    }
 }
