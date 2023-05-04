@@ -1,5 +1,6 @@
 package com.groupe2.redline.controllers;
 
+import com.groupe2.redline.dto.salle.SalleDto;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.entities.Utilisateur;
@@ -13,6 +14,7 @@ import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.exceptions.SiteInactifException;
 import com.groupe2.redline.services.SalleService;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,9 +44,12 @@ public class SalleController {
     }
 
     @PostMapping("/add")
-    public String addSalle(@RequestBody Salle salle) {
-        return salleService.addSalle(salle);
-
+    public ResponseEntity <Salle> addSalle(@RequestBody SalleDto salleDto) {
+        try {
+            return ResponseEntity.status(201).body(salleService.addSalle(salleDto));
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @GetMapping("/get/{id}")
