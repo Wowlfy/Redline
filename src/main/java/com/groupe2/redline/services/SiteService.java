@@ -2,6 +2,7 @@ package com.groupe2.redline.services;
 
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.repository.SiteRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Sort;
@@ -31,16 +32,26 @@ public class SiteService {
         return savedSite;
     }
 
-    public Site editSite(Long id, Site site) throws ClassNotFoundException {
+    public Site editSite(Long id, Site site) throws EntityNotFoundException {
         Optional<Site> editingSite = siteRepository.findById(id);
         if (!editingSite.isPresent()) {
-            throw new ClassNotFoundException("Le site avec l'ID " + id + " n'existe pas.");
+            throw new EntityNotFoundException("Le site avec l'ID " + id + " n'existe pas.");
         }
 
         Site editedSite = editingSite.get();
-        editedSite.setLibelle(site.getLibelle());
-        editedSite.setDescription(site.getDescription());
-        editedSite.setAdresse(site.getAdresse());
+
+        if(site.getLibelle() != null) {
+            editedSite.setLibelle(site.getLibelle());
+
+        }
+        if(site.getDescription() != null) {
+            editedSite.setDescription(site.getDescription());
+
+        }
+
+        if(site.getAdresse() != null) {
+            editedSite.setAdresse(site.getAdresse());
+        }
 
         Site savedSite = siteRepository.save(editedSite);
         return savedSite;
