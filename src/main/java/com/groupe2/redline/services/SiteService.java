@@ -3,6 +3,8 @@ package com.groupe2.redline.services;
 import com.groupe2.redline.controllers.dto.SiteDTO;
 import com.groupe2.redline.controllers.mappers.SiteMapper;
 import com.groupe2.redline.entities.Site;
+import com.groupe2.redline.exceptions.SiteDejaActifException;
+import com.groupe2.redline.exceptions.SiteDejaInactifException;
 import com.groupe2.redline.repository.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -36,9 +38,13 @@ public class SiteService {
         return savedSite;
     }
 
+    public Optional<Site> findById(Long id) {
+        return siteRepository.findById(id);
+    }
+
     public Site editSite(Long id, SiteDTO siteDTO) throws EntityNotFoundException {
         Optional<Site> editingSite = siteRepository.findById(id);
-        if (!editingSite.isPresent()) {
+        if (editingSite.isEmpty()) {
             throw new EntityNotFoundException("Le site avec l'ID " + id + " n'existe pas.");
         }
 
@@ -46,5 +52,39 @@ public class SiteService {
         Site savedSite = siteRepository.save(updatedSite);
 
         return savedSite;
+    }
+
+    public void activer(Long idSite) throws SiteDejaActifException {
+        Optional<Site> siteOptional = findById(idSite);
+
+        if (siteOptional.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        Site site = siteOptional.get();
+
+        if (site.isActif()) {
+            throw new SiteDejaActifException();
+        }
+
+        site.setActif(true);
+        siteRepository.saveAndFlush(site);
+    }
+
+    public void desactiver(Long idSite) throws SiteDejaInactifException {
+        Optional<Site> siteOptional = findById(idSite);
+
+        if (siteOptional.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        Site site = siteOptional.get();
+
+        if (!site.isActif()) {
+            throw new SiteDejaInactifException();
+        }
+
+        site.setActif(false);
+        siteRepository.saveAndFlush(site);
     }
 }

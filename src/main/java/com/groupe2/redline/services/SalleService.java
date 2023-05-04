@@ -1,10 +1,13 @@
 package com.groupe2.redline.services;
 
+import com.groupe2.redline.dto.salle.SalleDto;
 import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 import com.groupe2.redline.exceptions.SalleInactiveException;
+import com.groupe2.redline.exceptions.SiteInactifException;
+import com.groupe2.redline.mappers.SalleDtoMapper;
 import com.groupe2.redline.repository.ReservationRepository;
 import com.groupe2.redline.repository.SalleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,7 +25,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class SalleService {
-
+    @Autowired
+    private SalleDtoMapper salleDtoMapper;
     private final SalleRepository salleRepository;
 
     private final ReservationRepository reservationRepository;
@@ -44,8 +48,11 @@ public class SalleService {
         return salleRepository.findById(id);
     }
 
-    public String addSalle(Salle salle) {
-        return null;
+    public Salle addSalle(SalleDto salleDto) throws EntityNotFoundException {
+        Salle salle = salleDtoMapper.salleFromDto(salleDto);
+
+        Salle savedSalle = this.salleRepository.save(salle);
+        return savedSalle;
     }
 
     /**
@@ -56,7 +63,7 @@ public class SalleService {
      * @param creneau Le créneau sur lequel réserver la salle
      * @param idAuteur L'id de l'utilisateur effectuant la réservation
      */
-    public void reserver(Long idSalle, Date date, int creneau, Long idAuteur) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException {
+    public void reserver(Long idSalle, Date date, int creneau, Long idAuteur) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException, SiteInactifException {
         // Récupérer les entités mentionnées dans la requête
         Optional<Salle> salleOptional = findById(idSalle);
         Optional<Utilisateur> auteurOptional = utilisateurService.findById(idAuteur);
@@ -72,10 +79,14 @@ public class SalleService {
         Salle salle = salleOptional.get();
         Utilisateur auteur = auteurOptional.get();
 
-        // Vérifier que la salle est active
+        // Vérifier que la salle et le site sont actifs
         if (!salle.isActif()) {
             throw new SalleInactiveException();
         }
+        if (!salle.getSite().isActif()) {
+            throw new SiteInactifException();
+        }
+
         // Vérifier qu'une réservation similaire n'existe pas déjà
         Reservation nouvelleReservation = new Reservation();
         nouvelleReservation.setSalle(salle);
@@ -102,5 +113,16 @@ public class SalleService {
         salle.setActif(valeur);
         salleRepository.saveAndFlush(salle);
         return true;
+    }
+
+    public Salle editSalle(Long id, Salle salle) {
+        Salle existingSalle = salleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Salle not found with id " + id));
+
+        existingSalle.setLibelle(salle.getLibelle());
+        existingSalle.setDescription(salle.getDescription());
+        existingSalle.setNbPlaces(salle.getNbPlaces());
+
+        return salleRepository.save(existingSalle);
     }
 }
