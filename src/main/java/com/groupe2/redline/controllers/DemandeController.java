@@ -18,7 +18,7 @@ public class DemandeController {
     private DemandeService demandeService;
 
     @PostMapping("/creer")
-    public ResponseEntity<String> addDemande(
+    public ResponseEntity<Demande> addDemande(
             @RequestParam String nom,
             @RequestParam String email,
             @RequestParam int duree,
@@ -27,16 +27,9 @@ public class DemandeController {
             @RequestParam Date proposition3,
             @RequestParam String description
     ) {
-        Demande nouvelleDemande = new Demande();
-        nouvelleDemande.setNomDemandeur(nom);
-        nouvelleDemande.setEmail(email);
-        nouvelleDemande.setDuree(duree);
-        nouvelleDemande.setPropositionDate1(proposition1);
-        nouvelleDemande.setPropositionDate2(proposition2);
-        nouvelleDemande.setPropositionDate3(proposition3);
-        nouvelleDemande.setDescription(description);
-        demandeService.addDemande(nouvelleDemande);
 
-        return ResponseEntity.ok("Demande enregistrée.");
+        Demande nouvelleDemande = demandeService.creer(nom, email, duree, proposition1, proposition2, proposition3, description);
+
+        return ResponseEntity.ok(nouvelleDemande);
     }
 }
