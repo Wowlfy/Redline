@@ -1,10 +1,11 @@
 package com.groupe2.redline.services;
 
+import com.groupe2.redline.controllers.dto.SiteDTO;
+import com.groupe2.redline.controllers.mappers.SiteMapper;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.repository.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,11 @@ public class SiteService {
 
     private final SiteRepository siteRepository;
 
-    public SiteService(SiteRepository siteRepository) {
+    private final SiteMapper siteMapper;
+
+    public SiteService(SiteRepository siteRepository, SiteMapper siteMapper) {
         this.siteRepository = siteRepository;
+        this.siteMapper = siteMapper;
     }
 
     public List<Site> getAllSites() {
@@ -32,28 +36,15 @@ public class SiteService {
         return savedSite;
     }
 
-    public Site editSite(Long id, Site site) throws EntityNotFoundException {
+    public Site editSite(Long id, SiteDTO siteDTO) throws EntityNotFoundException {
         Optional<Site> editingSite = siteRepository.findById(id);
         if (!editingSite.isPresent()) {
             throw new EntityNotFoundException("Le site avec l'ID " + id + " n'existe pas.");
         }
 
-        Site editedSite = editingSite.get();
+        Site updatedSite = siteMapper.editSitefromDTO(editingSite.get(), siteDTO);
+        Site savedSite = siteRepository.save(updatedSite);
 
-        if(site.getLibelle() != null) {
-            editedSite.setLibelle(site.getLibelle());
-
-        }
-        if(site.getDescription() != null) {
-            editedSite.setDescription(site.getDescription());
-
-        }
-
-        if(site.getAdresse() != null) {
-            editedSite.setAdresse(site.getAdresse());
-        }
-
-        Site savedSite = siteRepository.save(editedSite);
         return savedSite;
     }
 }
