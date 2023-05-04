@@ -1,13 +1,14 @@
-package com.groupe2.redline.controllers.mappers;
+package com.groupe2.redline.mappers;
 
-import com.groupe2.redline.controllers.dto.SiteDTO;
+import com.groupe2.redline.dto.SiteDto;
 import com.groupe2.redline.entities.Site;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SiteMapper {
 
-    public Site editSitefromDTO(Site site, SiteDTO siteDTO) {
+
+    public Site editSiteFromDTO(Site site, SiteDto siteDTO) {
         if(siteDTO.getLibelle() != null) {
             site.setLibelle(siteDTO.getLibelle());
         }

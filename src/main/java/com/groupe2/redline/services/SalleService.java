@@ -1,15 +1,15 @@
 package com.groupe2.redline.services;
 
-import com.groupe2.redline.dto.salle.SalleDto;
+import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.exceptions.SiteInactifException;
-import com.groupe2.redline.mappers.SalleDtoMapper;
-import com.groupe2.redline.repository.ReservationRepository;
-import com.groupe2.redline.repository.SalleRepository;
+import com.groupe2.redline.mappers.SalleMapper;
+import com.groupe2.redline.repositories.ReservationRepository;
+import com.groupe2.redline.repositories.SalleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +26,16 @@ import java.util.Optional;
 @Transactional
 public class SalleService {
     @Autowired
-    private SalleDtoMapper salleDtoMapper;
-    private final SalleRepository salleRepository;
+    private SalleMapper salleMapper;
 
-    private final ReservationRepository reservationRepository;
+    @Autowired
+    private SalleRepository salleRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @Autowired
     private UtilisateurService utilisateurService;
-
-    public SalleService(SalleRepository salleRepository, ReservationRepository reservationRepository) {
-        this.salleRepository = salleRepository;
-        this.reservationRepository = reservationRepository;
-    }
 
     public List<Salle> getAllSalles() {
         List<Salle> salles = this.salleRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
@@ -49,7 +47,7 @@ public class SalleService {
     }
 
     public Salle addSalle(SalleDto salleDto) throws EntityNotFoundException {
-        Salle salle = salleDtoMapper.salleFromDto(salleDto);
+        Salle salle = salleMapper.salleFromDto(salleDto);
 
         Salle savedSalle = this.salleRepository.save(salle);
         return savedSalle;

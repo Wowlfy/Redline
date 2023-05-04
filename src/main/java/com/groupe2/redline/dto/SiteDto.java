@@ -1,11 +1,17 @@
-package com.groupe2.redline.dto.salle;
+package com.groupe2.redline.dto;
 
-public class SalleDto {
+public class SiteDto {
+
     private String libelle;
-    private String description;
-    private Integer nbPlaces;
-    private Long siteId;
 
+    private String description;
+
+    private String adresse;
+
+
+    public SiteDto() {
+
+    }
 
     public String getLibelle() {
         return libelle;
@@ -23,19 +29,12 @@ public class SalleDto {
         this.description = description;
     }
 
-    public Integer getNbPlaces() {
-        return nbPlaces;
+    public String getAdresse() {
+        return adresse;
     }
 
-    public void setNbPlaces(Integer nbPlaces) {
-        this.nbPlaces = nbPlaces;
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
     }
 
-    public Long getSiteId() {
-        return siteId;
-    }
-
-    public void setSiteId(Long siteId) {
-        this.siteId = siteId;
-    }
 }
