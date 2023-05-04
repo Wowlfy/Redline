@@ -3,6 +3,7 @@ package com.groupe2.redline.controllers;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.services.SiteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +33,8 @@ public class SiteController {
         return new ResponseEntity<>(saveSite, HttpStatus.OK);
     }
 
+    @PutMapping(value = "/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity <Site> updateSite(@PathVariable Long id, @RequestBody Site site) throws ClassNotFoundException {
+        return new ResponseEntity<>(siteService.editSite(id, site), HttpStatus.OK);
+    }
 }
