@@ -1,5 +1,6 @@
 package com.groupe2.redline.entities;
 
+import com.groupe2.redline.controllers.dto.SiteDTO;
 import jakarta.persistence.*;
 
 import java.util.Set;
