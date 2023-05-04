@@ -19,6 +19,8 @@ public class SalleService {
     public List<Salle> getAllSalles() {
         return this.salleRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
     }
+
+    //TODO Gestion des erreurs
     public Salle addSalle(Salle salle){
         return salleRepository.save(salle);
     }
