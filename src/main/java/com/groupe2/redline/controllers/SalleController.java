@@ -3,6 +3,7 @@ package com.groupe2.redline.controllers;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 import com.groupe2.redline.exceptions.SalleInactiveException;
+import com.groupe2.redline.exceptions.SiteInactifException;
 import com.groupe2.redline.services.SalleService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,8 @@ public class SalleController {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (SalleInactiveException e) {
             return ResponseEntity.status(409).body("La salle spécifiée est inactive.");
+        } catch (SiteInactifException e) {
+            return ResponseEntity.status(409).body("Le site dans lequel est situé la salle spécifiée est inactif.");
         } catch (CreneauIndisponibleException e) {
             return ResponseEntity.status(409).body("Une réservation existe déjà sur ce créneau.");
         }
