@@ -3,10 +3,13 @@ package com.groupe2.redline.services;
 import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Utilisateur;
+import com.groupe2.redline.exceptions.CreneauIndisponibleException;
+import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.repository.ReservationRepository;
 import com.groupe2.redline.repository.SalleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
@@ -23,6 +26,9 @@ public class SalleService {
     private final SalleRepository salleRepository;
 
     private final ReservationRepository reservationRepository;
+
+    @Autowired
+    private UtilisateurService utilisateurService;
 
     public SalleService(SalleRepository salleRepository, ReservationRepository reservationRepository) {
         this.salleRepository = salleRepository;
@@ -44,13 +50,32 @@ public class SalleService {
 
     /**
      * Tente d'enregistrer une réservation
-     * @param salle La salle concernée
-     * @param date La date à laquelle réserver la salle
+     *
+     * @param idSalle L'id de la salle concernée
+     * @param date    La date à laquelle réserver la salle
      * @param creneau Le créneau sur lequel réserver la salle
-     * @param auteur L'auteur de la réservation
-     * @return Si la réservation a été enregistrée.
+     * @param idAuteur L'id de l'utilisateur effectuant la réservation
      */
-    public boolean reserver(Salle salle, Date date, int creneau, Utilisateur auteur) {
+    public void reserver(Long idSalle, Date date, int creneau, Long idAuteur) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException {
+        // Récupérer les entités mentionnées dans la requête
+        Optional<Salle> salleOptional = findById(idSalle);
+        Optional<Utilisateur> auteurOptional = utilisateurService.findById(idAuteur);
+
+        // Vérifier que les entités existent
+        if (salleOptional.isEmpty()) {
+            throw new EntityNotFoundException("La salle spécifiée n'existe pas.");
+        }
+        if (auteurOptional.isEmpty()) {
+            throw new EntityNotFoundException("L'utilisateur spécifié n'existe pas.");
+        }
+
+        Salle salle = salleOptional.get();
+        Utilisateur auteur = auteurOptional.get();
+
+        // Vérifier que la salle est active
+        if (!salle.isActif()) {
+            throw new SalleInactiveException();
+        }
         // Vérifier qu'une réservation similaire n'existe pas déjà
         Reservation nouvelleReservation = new Reservation();
         nouvelleReservation.setSalle(salle);
@@ -61,15 +86,22 @@ public class SalleService {
         Example<Reservation> example = Example.of(nouvelleReservation, exampleMatcher);
         boolean creneauDisponible = !reservationRepository.exists(example);
 
-        if (creneauDisponible) {
-            nouvelleReservation.setUtilisateur(auteur);
-            reservationRepository.saveAndFlush(nouvelleReservation);
-            // Vrai : La réservation a bien été enregistrée
-            return true;
-        } else {
-            // Faux : La réservation n'a pas été enregistrée, car une autre réservation existe déjà sur ce créneau
+        if (!creneauDisponible) {
+            throw new CreneauIndisponibleException();
+        }
+
+        nouvelleReservation.setUtilisateur(auteur);
+        reservationRepository.saveAndFlush(nouvelleReservation);
+    }
+
+    public boolean setActif(Salle salle, boolean valeur) {
+        if (salle.isActif() == valeur) {
             return false;
         }
+
+        salle.setActif(valeur);
+        salleRepository.saveAndFlush(salle);
+        return true;
     }
 
     public Salle editSalle(Long id, Salle salle) {

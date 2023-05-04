@@ -7,7 +7,11 @@ import com.groupe2.redline.services.SalleService;
 import com.groupe2.redline.services.UtilisateurService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import com.groupe2.redline.exceptions.CreneauIndisponibleException;
+
+import com.groupe2.redline.exceptions.SalleInactiveException;
+import com.groupe2.redline.services.SalleService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +29,6 @@ import java.util.Optional;
 public class SalleController {
     @Autowired
     private SalleService salleService;
-
-    @Autowired
-    private UtilisateurService utilisateurService;
 
     public SalleController(SalleService salleService) {
         this.salleService = salleService;
@@ -65,25 +66,44 @@ public class SalleController {
     }
 
     @PostMapping("/get/{id}/reserver")
-    public ResponseEntity<String> reserver(@PathVariable Long id, @RequestParam Date date, @RequestParam int creneau, @RequestParam Long idUtilisateur) {
+    public ResponseEntity<String> reserver(@PathVariable Long id, @RequestParam Date date, @RequestParam int creneau, @RequestParam Long idAuteur) {
         // TODO Associer à une demande (argument optionnel)
         // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
 
-        // Récupérer les entités mentionnées dans la requête
+        try {
+            salleService.reserver(id, date, creneau, idAuteur);
+            return ResponseEntity.status(201).body("Réservation enregistrée.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (SalleInactiveException e) {
+            return ResponseEntity.status(409).body("La salle spécifiée est inactive.");
+        } catch (CreneauIndisponibleException e) {
+            return ResponseEntity.status(409).body("Une réservation existe déjà sur ce créneau.");
+        }
+    }
+
+    @PatchMapping("/get/{id}/activer")
+    public ResponseEntity<String> activer(@PathVariable Long id) {
         Optional<Salle> salle = salleService.findById(id);
-        Optional<Utilisateur> auteur = utilisateurService.findById(idUtilisateur);
 
-
-        // Contrôler les informations fournies, et tenter d'enregistrer la réservation
         if (salle.isPresent()) {
-            if (auteur.isPresent()) {
-                // La requête est ok, tenter de réserver
-                if (salleService.reserver(salle.get(), date, creneau, auteur.get())) {
-                    return ResponseEntity.status(201).body("Réservation enregistrée.");
-                }
-                return ResponseEntity.status(400).body("Une réservation existe déjà sur ce créneau.");
+            if (salleService.setActif(salle.get(), true)) {
+                return ResponseEntity.status(200).body("La salle a été activée.");
             }
-            return ResponseEntity.status(404).body("L'utilisateur spécifié n'existe pas.");
+            return ResponseEntity.status(409).body("La salle est déjà active.");
+        }
+        return ResponseEntity.status(404).body("La salle spécifiée n'existe pas.");
+    }
+
+    @PatchMapping("/get/{id}/desactiver")
+    public ResponseEntity<String> desactiver(@PathVariable Long id) {
+        Optional<Salle> salle = salleService.findById(id);
+
+        if (salle.isPresent()) {
+            if (salleService.setActif(salle.get(), false)) {
+                return ResponseEntity.status(200).body("La salle a été désactivée.");
+            }
+            return ResponseEntity.status(409).body("La salle est déjà inactive.");
         }
         return ResponseEntity.status(404).body("La salle spécifiée n'existe pas.");
     }
