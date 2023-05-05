@@ -1,8 +1,15 @@
 package com.groupe2.redline.controllers;
 
+import com.groupe2.redline.dto.ReservationDTO;
 import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.exceptions.*;
+import com.groupe2.redline.services.SalleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import com.groupe2.redline.exceptions.CreneauIndisponibleException;
+import com.groupe2.redline.exceptions.SalleInactiveException;
+import com.groupe2.redline.exceptions.SiteInactifException;
 import com.groupe2.redline.services.SalleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -65,12 +71,12 @@ public class SalleController {
     }
 
     @PostMapping("/get/{id}/reserver")
-    public ResponseEntity<String> reserver(@PathVariable Long id, @RequestParam Date date, @RequestParam int creneau, @RequestParam Long idAuteur) {
+    public ResponseEntity<String> reserver(@RequestBody ReservationDTO reservationDTO) {
         // TODO Associer à une demande (argument optionnel)
         // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
 
         try {
-            salleService.reserver(id, date, creneau, idAuteur);
+            salleService.reserver(reservationDTO);
             return ResponseEntity.status(201).body("Réservation enregistrée.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
