@@ -15,7 +15,6 @@ public class SiteMapper {
         newSite.setLibelle(siteDto.getLibelle());
         newSite.setAdresse(siteDto.getAdresse());
         newSite.setDescription(siteDto.getDescription());
-        newSite.setActif(false);
         return newSite;
     }
 
