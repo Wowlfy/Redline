@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,19 +30,17 @@ public class SiteController {
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Site>> getSites() {
-        List<Site> sites = this.siteService.getAllSites();
-        return ResponseEntity.ok(sites);
+        return ResponseEntity.status(HttpStatus.OK).body(siteService.getAllSites());
     }
 
     @Operation(summary = "Ajouter un site")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Site créé"),
+            @ApiResponse(responseCode = "201", description = "Site créé"),
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Site> addSite(@RequestBody SiteDto siteDto) {
-        Site saveSite = siteService.addSite(siteDto);
-        return new ResponseEntity<>(saveSite, HttpStatus.OK);
+    public ResponseEntity<Site> addSite(@RequestBody @Valid SiteDto siteDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(siteService.addSite(siteDto));
     }
 
     @Operation(summary = "Modifier un site")
@@ -50,31 +49,17 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/get/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody SiteDto siteDTO) throws EntityNotFoundException {
-        return new ResponseEntity<>(siteService.editSite(id, siteDTO), HttpStatus.OK);
+    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody @Valid SiteDto siteDTO) throws EntityNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(siteService.editSite(id, siteDTO));
     }
 
     @PatchMapping("/get/{id}/activer")
-    public ResponseEntity<String> activer(@PathVariable Long id) {
-        try {
-            siteService.activer(id);
-            return ResponseEntity.status(200).body("Le site a été activé.");
-        } catch (SiteDejaActifException e) {
-            return ResponseEntity.status(409).body("Le site est déjà actif.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body("Le site spécifié n'existe pas.");
-        }
+    public ResponseEntity<Site> activer(@PathVariable Long id) throws SiteDejaActifException {
+        return ResponseEntity.status(HttpStatus.OK).body(siteService.activer(id));
     }
 
     @PatchMapping("/get/{id}/desactiver")
-    public ResponseEntity<String> desactiver(@PathVariable Long id) {
-        try {
-            siteService.desactiver(id);
-            return ResponseEntity.status(200).body("Le site a été désactivé.");
-        } catch (SiteDejaInactifException e) {
-            return ResponseEntity.status(409).body("Le site est déjà inactif.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body("Le site spécifié n'existe pas.");
-        }
+    public ResponseEntity<Site> desactiver(@PathVariable Long id) throws SiteDejaInactifException {
+        return ResponseEntity.status(HttpStatus.OK).body(siteService.desactiver(id));
     }
 }
