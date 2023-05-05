@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class DemandeDto {
 
-    private String nomDemander;
+    private String nomDemandeur;
 
     private String email;
 
@@ -23,11 +23,11 @@ public class DemandeDto {
     }
 
     public String getNomDemander() {
-        return nomDemander;
+        return nomDemandeur;
     }
 
     public void setNomDemander(String nomDemander) {
-        this.nomDemander = nomDemander;
+        this.nomDemandeur = nomDemander;
     }
 
     public String getEmail() {

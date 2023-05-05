@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 public class DemandeMapper {
 
     public Demande createDemandeFromDto(DemandeDto demandeDto) {
-        if(demandeDto == null) {
-            return null;
-        }
 
         Demande newDemande = new Demande();
         newDemande.setNomDemandeur(demandeDto.getNomDemander());
