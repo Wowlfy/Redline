@@ -5,11 +5,12 @@ import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.repositories.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Component
 public class SalleMapper {
 
     private final SiteRepository siteRepository;
