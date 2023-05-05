@@ -70,7 +70,8 @@ public class SalleController {
     }
 
     @PostMapping("/get/{id}/reserver")
-    public ResponseEntity<String> reserver(@RequestBody ReservationDTO reservationDTO) {
+    @Validated(Creation.class)
+    public ResponseEntity<String> reserver(@RequestBody @Valid ReservationDTO reservationDTO) {
         // TODO Associer à une demande (argument optionnel)
         // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
 

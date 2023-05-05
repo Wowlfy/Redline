@@ -1,37 +1,38 @@
 package com.groupe2.redline.dto;
 
+import com.groupe2.redline.validation.groups.Creation;
 import jakarta.validation.constraints.*;
 
 import java.util.Date;
 
 public class DemandeDto {
 
-    @NotBlank
+    @NotBlank(groups = Creation.class)
     @Size(max = 255)
     private String nomDemandeur;
 
-    @NotBlank
+    @NotBlank(groups = Creation.class)
     @Size(max = 320)
     @Email
     private String email;
 
-    @NotNull
+    @NotNull(groups = Creation.class)
     @Positive
     private int duree;
 
-    @NotNull
+    @NotNull(groups = Creation.class)
     @Future
     private Date propositionDate1;
 
-    @NotNull
+    @NotNull(groups = Creation.class)
     @Future
     private Date propositionDate2;
 
-    @NotNull
+    @NotNull(groups = Creation.class)
     @Future
     private Date propositionDate3;
 
-    @NotBlank
+    @NotBlank(groups = Creation.class)
     @Size(max = 255)
     private String description;
 
