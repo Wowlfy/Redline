@@ -1,21 +1,38 @@
 package com.groupe2.redline.dto;
 
+import jakarta.validation.constraints.*;
+
 import java.util.Date;
 
 public class DemandeDto {
 
+    @NotBlank
+    @Size(max = 255)
     private String nomDemandeur;
 
+    @NotBlank
+    @Size(max = 320)
+    @Email
     private String email;
 
+    @NotNull
+    @Positive
     private int duree;
 
+    @NotNull
+    @Future
     private Date propositionDate1;
 
+    @NotNull
+    @Future
     private Date propositionDate2;
 
+    @NotNull
+    @Future
     private Date propositionDate3;
 
+    @NotBlank
+    @Size(max = 255)
     private String description;
 
     public DemandeDto() {
