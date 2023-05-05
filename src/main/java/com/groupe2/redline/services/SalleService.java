@@ -4,6 +4,8 @@ import com.groupe2.redline.dto.ReservationDTO;
 import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
+import com.groupe2.redline.entities.Utilisateur;
+import com.groupe2.redline.exceptions.*;
 import com.groupe2.redline.exceptions.CreneauIndisponibleException;
 import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.exceptions.SiteInactifException;
@@ -45,10 +47,10 @@ public class SalleService {
     }
 
     public List<Salle> getAllSalles() {
-        List<Salle> salles = this.salleRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
-        return salles;
+        return this.salleRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
     }
 
+    @Deprecated
     public Optional<Salle> findById(Long id) {
         return salleRepository.findById(id);
     }
@@ -56,37 +58,58 @@ public class SalleService {
     public Salle addSalle(SalleDto salleDto) throws EntityNotFoundException {
         Salle salle = salleMapper.createSalleFromDto(salleDto);
 
-        Salle savedSalle = this.salleRepository.save(salle);
-        return savedSalle;
+        return salleRepository.save(salle);
     }
 
     /**
      * Tente d'enregistrer une réservation
+     *
+     * @param idSalle  L'id de la salle concernée
+     * @param date     La date à laquelle réserver la salle
+     * @param creneau  Le créneau sur lequel réserver la salle
+     * @param idAuteur L'id de l'utilisateur effectuant la réservation
      */
     public void reserver(ReservationDTO reservationDto) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException, SiteInactifException {
         Reservation updatedReservation = reservationMapper.createReservationFromDto(reservationDto);
         reservationRepository.saveAndFlush(updatedReservation);
     }
 
-    public boolean setActif(Salle salle, boolean valeur) {
-        if (salle.isActif() == valeur) {
-            return false;
-        }
+    public Salle activer(Long idSalle) throws SalleDejaActiveException, EntityNotFoundException {
+        Salle salle = findSalleOrThrow(idSalle);
 
-        salle.setActif(valeur);
-        salleRepository.saveAndFlush(salle);
-        return true;
+        if (!salle.isActif()) throw new SalleDejaActiveException("La salle est déjà active.");
+
+        salle.setActif(true);
+
+        return salleRepository.saveAndFlush(salle);
     }
 
-    public Salle editSalle(Long id, SalleDto salleDto) {
-        Optional<Salle> existingSalle = salleRepository.findById(id);
-        if (existingSalle.isEmpty()) {
-            throw new EntityNotFoundException("La salle avec l'ID " + id + " n'existe pas.");
-        }
+    public Salle desactiver(Long idSalle) throws SalleDejaInactiveException, EntityNotFoundException {
+        Salle salle = findSalleOrThrow(idSalle);
 
-        Salle updatedSalle = salleMapper.editSalleFromDto(existingSalle.get(), salleDto);
-        Salle savedSalle = salleRepository.save(updatedSalle);
+        if (!salle.isActif()) throw new SalleDejaInactiveException("La salle est déjà inactive.");
 
-        return savedSalle;
+        salle.setActif(false);
+
+        return salleRepository.saveAndFlush(salle);
+    }
+
+    public Salle editSalle(Long id, SalleDto salleDto) throws EntityNotFoundException {
+        Salle salle = findSalleOrThrow(id);
+
+        return salleRepository.save(salleMapper.editSalleFromDto(salle, salleDto));
+    }
+
+    /**
+     * Récupérer une salle par son id, ou lancer une erreur.
+     *
+     * @param id L'id de la salle recherchée
+     * @return La Salle
+     * @throws EntityNotFoundException Si l'id ne correspond à aucune salle
+     */
+    private Salle findSalleOrThrow(Long id) throws EntityNotFoundException {
+        Optional<Salle> salleOptional = salleRepository.findById(id);
+        if (salleOptional.isEmpty()) throw new EntityNotFoundException("La salle spécifiée n'existe pas.");
+        return salleOptional.get();
     }
 }
