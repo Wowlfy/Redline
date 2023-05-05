@@ -59,8 +59,8 @@ public class SalleController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity <Salle> editSalle(@PathVariable Long id, @RequestBody Salle salle) throws EntityNotFoundException {
-        return new ResponseEntity<>(salleService.editSalle(id, salle), HttpStatus.OK);
+    public ResponseEntity <Salle> editSalle(@PathVariable Long id, @RequestBody SalleDto salleDto) throws EntityNotFoundException {
+        return new ResponseEntity<>(salleService.editSalle(id, salleDto), HttpStatus.OK);
     }
     @DeleteMapping("/delete/{id}")
     public String deleteSalleById(@PathVariable Long id) {

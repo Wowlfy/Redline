@@ -47,7 +47,7 @@ public class SalleService {
     }
 
     public Salle addSalle(SalleDto salleDto) throws EntityNotFoundException {
-        Salle salle = salleMapper.salleFromDto(salleDto);
+        Salle salle = salleMapper.createSalleFromDto(salleDto);
 
         Salle savedSalle = this.salleRepository.save(salle);
         return savedSalle;
@@ -113,14 +113,15 @@ public class SalleService {
         return true;
     }
 
-    public Salle editSalle(Long id, Salle salle) {
-        Salle existingSalle = salleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Salle not found with id " + id));
+    public Salle editSalle(Long id, SalleDto salleDto) {
+        Optional<Salle> existingSalle = salleRepository.findById(id);
+        if (existingSalle.isEmpty()) {
+            throw new EntityNotFoundException("La salle avec l'ID " + id + " n'existe pas.");
+        }
 
-        existingSalle.setLibelle(salle.getLibelle());
-        existingSalle.setDescription(salle.getDescription());
-        existingSalle.setNbPlaces(salle.getNbPlaces());
+        Salle updatedSalle = salleMapper.editSalleFromDto(existingSalle.get(), salleDto);
+        Salle savedSalle = salleRepository.save(updatedSalle);
 
-        return salleRepository.save(existingSalle);
+        return savedSalle;
     }
 }

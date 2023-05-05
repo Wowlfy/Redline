@@ -20,7 +20,7 @@ public class DemandeController {
         this.demandeService = demandeService;
     }
 
-    @PostMapping(name = "/creer", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/creer", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Demande> addDemande(
             @RequestBody DemandeDto demandeDto
             ) {
