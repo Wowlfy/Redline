@@ -36,8 +36,7 @@ public class SalleService {
     private UtilisateurService utilisateurService;
 
     public List<Salle> getAllSalles() {
-        List<Salle> salles = this.salleRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
-        return salles;
+        return this.salleRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
     }
 
     @Deprecated
@@ -48,8 +47,7 @@ public class SalleService {
     public Salle addSalle(SalleDto salleDto) throws EntityNotFoundException {
         Salle salle = salleMapper.createSalleFromDto(salleDto);
 
-        Salle savedSalle = this.salleRepository.save(salle);
-        return savedSalle;
+        return salleRepository.save(salle);
     }
 
     /**

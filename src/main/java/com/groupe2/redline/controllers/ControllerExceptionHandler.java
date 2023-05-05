@@ -5,7 +5,6 @@ import com.groupe2.redline.exceptions.SalleDejaInactiveException;
 import com.groupe2.redline.exceptions.SiteDejaActifException;
 import com.groupe2.redline.exceptions.SiteDejaInactifException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -38,7 +37,7 @@ public class ControllerExceptionHandler {
      * @return Erreur 404
      */
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> entityNotFoundHandler(HttpServletRequest request, EntityNotFoundException exception) {
+    public ResponseEntity<String> entityNotFoundHandler(EntityNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
@@ -48,7 +47,7 @@ public class ControllerExceptionHandler {
      * @return Erreur 409
      */
     @ExceptionHandler(SiteDejaActifException.class)
-    public ResponseEntity<String> siteDejaActifHandler(HttpServletRequest request, SiteDejaActifException exception) {
+    public ResponseEntity<String> siteDejaActifHandler(SiteDejaActifException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
@@ -58,7 +57,7 @@ public class ControllerExceptionHandler {
      * @return Erreur 409
      */
     @ExceptionHandler(SiteDejaInactifException.class)
-    public ResponseEntity<String> siteDejaInactifHandler(HttpServletRequest request, SiteDejaInactifException exception) {
+    public ResponseEntity<String> siteDejaInactifHandler(SiteDejaInactifException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
@@ -68,7 +67,7 @@ public class ControllerExceptionHandler {
      * @return Erreur 409
      */
     @ExceptionHandler(SalleDejaInactiveException.class)
-    public ResponseEntity<String> salleDejaInactiveHandler(HttpServletRequest request, SalleDejaInactiveException exception) {
+    public ResponseEntity<String> salleDejaInactiveHandler(SalleDejaInactiveException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
@@ -78,7 +77,7 @@ public class ControllerExceptionHandler {
      * @return Erreur 409
      */
     @ExceptionHandler(SalleDejaActiveException.class)
-    public ResponseEntity<String> salleDejaActiveHandler(HttpServletRequest request, SalleDejaActiveException exception) {
+    public ResponseEntity<String> salleDejaActiveHandler(SalleDejaActiveException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
@@ -88,7 +87,7 @@ public class ControllerExceptionHandler {
      * @return Erreur 400
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> validationHandler(HttpServletRequest request, MethodArgumentNotValidException exception) {
+    public ResponseEntity<List<String>> validationHandler(MethodArgumentNotValidException exception) {
         List<ObjectError> errors = exception.getBindingResult().getAllErrors();
         List<String> messages = errors.stream()
                 .map(ObjectError::toString)
