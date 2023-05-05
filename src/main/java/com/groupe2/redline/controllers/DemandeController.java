@@ -1,12 +1,12 @@
 package com.groupe2.redline.controllers;
 
+import com.groupe2.redline.dto.DemandeDto;
 import com.groupe2.redline.entities.Demande;
 import com.groupe2.redline.services.DemandeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -20,19 +20,13 @@ public class DemandeController {
         this.demandeService = demandeService;
     }
 
-    @PostMapping("/creer")
+    @PostMapping(value = "/creer", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Demande> addDemande(
-            @RequestParam String nom,
-            @RequestParam String email,
-            @RequestParam int duree,
-            @RequestParam Date proposition1,
-            @RequestParam Date proposition2,
-            @RequestParam Date proposition3,
-            @RequestParam String description
-    ) {
+            @RequestBody DemandeDto demandeDto
+            ) {
 
-        Demande nouvelleDemande = demandeService.creer(nom, email, duree, proposition1, proposition2, proposition3, description);
+        Demande nouvelleDemande = demandeService.creer(demandeDto);
 
-        return ResponseEntity.ok(nouvelleDemande);
+        return new ResponseEntity<>(nouvelleDemande, HttpStatus.OK);
     }
 }
