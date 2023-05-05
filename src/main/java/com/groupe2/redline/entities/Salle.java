@@ -1,11 +1,12 @@
 package com.groupe2.redline.entities;
+
 import jakarta.persistence.*;
-import java.io.Serializable;
+
 import java.util.Set;
 
 @Entity
 @Table(name = "salle")
-public class Salle implements Serializable {
+public class Salle {
 
         @Id
         @GeneratedValue
