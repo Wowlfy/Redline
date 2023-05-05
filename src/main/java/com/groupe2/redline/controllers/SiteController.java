@@ -5,6 +5,8 @@ import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.exceptions.SiteDejaActifException;
 import com.groupe2.redline.exceptions.SiteDejaInactifException;
 import com.groupe2.redline.services.SiteService;
+import com.groupe2.redline.validation.groups.Creation;
+import com.groupe2.redline.validation.groups.Modification;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,14 +15,15 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/site")
+@Validated
 public class SiteController {
-
 
     private final SiteService siteService;
 
@@ -38,6 +41,7 @@ public class SiteController {
             @ApiResponse(responseCode = "201", description = "Site créé"),
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
+    @Validated(Creation.class)
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Site> addSite(@RequestBody @Valid SiteDto siteDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(siteService.addSite(siteDto));
@@ -49,6 +53,7 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/get/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Validated(Modification.class)
     public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody @Valid SiteDto siteDTO) throws EntityNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(siteService.editSite(id, siteDTO));
     }

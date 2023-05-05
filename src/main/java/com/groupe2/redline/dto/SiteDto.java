@@ -1,18 +1,19 @@
 package com.groupe2.redline.dto;
 
+import com.groupe2.redline.validation.groups.Creation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class SiteDto {
-    @NotBlank
+    @NotBlank(groups = Creation.class)
     @Size(max = 50)
     private String libelle;
 
-    @NotBlank
+    @NotBlank(groups = Creation.class)
     @Size(max = 255)
     private String description;
 
-    @NotBlank
+    @NotBlank(groups = Creation.class)
     @Size(max = 150)
     private String adresse;
 
