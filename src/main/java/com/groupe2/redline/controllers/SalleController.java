@@ -12,7 +12,6 @@ import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.exceptions.SiteInactifException;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +26,12 @@ import java.util.Optional;
 
 public class SalleController {
 
-    @Autowired
-    private SalleService salleService;
+
+    private final SalleService salleService;
+
+    public SalleController(SalleService salleService) {
+        this.salleService = salleService;
+    }
 
     @GetMapping("/get")
     public ResponseEntity<List<Salle>> getSalles() {

@@ -2,7 +2,6 @@ package com.groupe2.redline.controllers;
 
 import com.groupe2.redline.entities.Demande;
 import com.groupe2.redline.services.DemandeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,11 @@ import java.util.Date;
 @RequestMapping("/api/demande")
 public class DemandeController {
 
-    @Autowired
-    private DemandeService demandeService;
+    private final DemandeService demandeService;
+
+    public DemandeController(DemandeService demandeService) {
+        this.demandeService = demandeService;
+    }
 
     @PostMapping("/creer")
     public ResponseEntity<Demande> addDemande(

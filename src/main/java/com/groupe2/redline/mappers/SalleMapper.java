@@ -5,7 +5,6 @@ import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.repositories.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,8 +12,11 @@ import java.util.Optional;
 @Service
 public class SalleMapper {
 
-    @Autowired
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
+
+    public SalleMapper(SiteRepository siteRepository) {
+        this.siteRepository = siteRepository;
+    }
 
     public Salle salleFromDto(SalleDto salleDto) throws EntityNotFoundException {
         Salle nouvelleSalle = new Salle();
