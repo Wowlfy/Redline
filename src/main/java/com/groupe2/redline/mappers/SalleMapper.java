@@ -18,7 +18,7 @@ public class SalleMapper {
         this.siteRepository = siteRepository;
     }
 
-    public Salle salleFromDto(SalleDto salleDto) throws EntityNotFoundException {
+    public Salle createSalleFromDto(SalleDto salleDto) throws EntityNotFoundException {
         Salle nouvelleSalle = new Salle();
         nouvelleSalle.setLibelle(salleDto.getLibelle());
         nouvelleSalle.setDescription(salleDto.getDescription());
@@ -29,5 +29,18 @@ public class SalleMapper {
         }
         nouvelleSalle.setSite(siteOptional.get());
         return nouvelleSalle;
+    }
+
+    public Salle editSalleFromDto(Salle salle, SalleDto salleDto) {
+        if(salleDto.getLibelle() != null) {
+            salle.setLibelle(salleDto.getLibelle());
+        }
+        if(salleDto.getDescription() != null) {
+            salle.setDescription(salleDto.getDescription());
+        }
+        if(salleDto.getNbPlaces() != null) {
+            salle.setNbPlaces(salleDto.getNbPlaces());
+        }
+        return salle;
     }
 }

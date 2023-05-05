@@ -30,9 +30,10 @@ public class SiteService {
         return sites;
     }
 
-    public Site addSite(Site site) {
+    public Site addSite(SiteDto siteDto) {
         //TODO Gestion des erreurs
-        Site savedSite = this.siteRepository.save(site);
+        Site updatedSite = siteMapper.createSiteFromDTO(siteDto);
+        Site savedSite = this.siteRepository.save(updatedSite);
         return savedSite;
     }
 

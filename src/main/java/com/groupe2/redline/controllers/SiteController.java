@@ -39,8 +39,8 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Site> addSite(@RequestBody Site site) {
-        Site saveSite = siteService.addSite(site);
+    public ResponseEntity<Site> addSite(@RequestBody SiteDto siteDto) {
+        Site saveSite = siteService.addSite(siteDto);
         return new ResponseEntity<>(saveSite, HttpStatus.OK);
     }
 
