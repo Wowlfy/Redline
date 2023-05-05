@@ -8,6 +8,7 @@ public class SiteDto {
 
     private String adresse;
 
+    private boolean actif;
 
     public SiteDto() {
 

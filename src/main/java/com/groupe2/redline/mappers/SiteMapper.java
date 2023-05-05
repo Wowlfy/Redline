@@ -7,6 +7,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class SiteMapper {
 
+    public Site createSiteFromDTO(SiteDto siteDto) {
+        if(siteDto == null) {
+            return null;
+        }
+        Site newSite = new Site();
+        newSite.setLibelle(siteDto.getLibelle());
+        newSite.setAdresse(siteDto.getAdresse());
+        newSite.setDescription(siteDto.getDescription());
+        newSite.setActif(false);
+        return newSite;
+    }
 
     public Site editSiteFromDTO(Site site, SiteDto siteDTO) {
         if(siteDTO.getLibelle() != null) {
