@@ -1,11 +1,20 @@
 package com.groupe2.redline.dto;
 
-public class SiteDto {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+public class SiteDto {
+    @NotBlank
+    @Size(max = 50)
     private String libelle;
 
+    @NotBlank
+    @Size(max = 255)
     private String description;
 
+    @NotBlank
+    @Size(max = 150)
     private String adresse;
 
 
