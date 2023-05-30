@@ -1,9 +1,23 @@
 package com.groupe2.redline.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public class SalleDto {
+    @NotBlank
+    @Size(max = 50)
     private String libelle;
+
+    @NotBlank
+    @Size(max = 255)
     private String description;
+    @NotNull
+    @Positive
     private Integer nbPlaces;
+
+    @NotNull
     private Long siteId;
 
 

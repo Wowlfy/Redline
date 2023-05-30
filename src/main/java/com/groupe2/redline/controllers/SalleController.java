@@ -1,25 +1,27 @@
 package com.groupe2.redline.controllers;
 
+import com.groupe2.redline.dto.ReservationDTO;
 import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Salle;
+import com.groupe2.redline.exceptions.*;
 import com.groupe2.redline.services.SalleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
 import com.groupe2.redline.exceptions.CreneauIndisponibleException;
-
 import com.groupe2.redline.exceptions.SalleInactiveException;
 import com.groupe2.redline.exceptions.SiteInactifException;
+import com.groupe2.redline.services.SalleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/salle")
@@ -40,10 +42,10 @@ public class SalleController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity <Salle> addSalle(@RequestBody SalleDto salleDto) {
+    public ResponseEntity<Salle> addSalle(@RequestBody @Valid SalleDto salleDto) {
         try {
             return ResponseEntity.status(201).body(salleService.addSalle(salleDto));
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
     }
@@ -59,21 +61,22 @@ public class SalleController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity <Salle> editSalle(@PathVariable Long id, @RequestBody Salle salle) throws EntityNotFoundException {
-        return new ResponseEntity<>(salleService.editSalle(id, salle), HttpStatus.OK);
+    public ResponseEntity<Salle> editSalle(@PathVariable Long id, @RequestBody @Valid SalleDto salleDto) throws EntityNotFoundException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(salleService.editSalle(id, salleDto));
     }
+
     @DeleteMapping("/delete/{id}")
     public String deleteSalleById(@PathVariable Long id) {
         return "le fichier a bien été supprimé";
     }
 
     @PostMapping("/get/{id}/reserver")
-    public ResponseEntity<String> reserver(@PathVariable Long id, @RequestParam Date date, @RequestParam int creneau, @RequestParam Long idAuteur) {
+    public ResponseEntity<String> reserver(@RequestBody ReservationDTO reservationDTO) {
         // TODO Associer à une demande (argument optionnel)
         // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
 
         try {
-            salleService.reserver(id, date, creneau, idAuteur);
+            salleService.reserver(reservationDTO);
             return ResponseEntity.status(201).body("Réservation enregistrée.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(404).body(e.getMessage());
@@ -87,28 +90,13 @@ public class SalleController {
     }
 
     @PatchMapping("/get/{id}/activer")
-    public ResponseEntity<String> activer(@PathVariable Long id) {
-        Optional<Salle> salle = salleService.findById(id);
+    public ResponseEntity<Salle> activer(@PathVariable Long id) throws SalleDejaActiveException {
+        return ResponseEntity.status(HttpStatus.OK).body(salleService.activer(id));
 
-        if (salle.isPresent()) {
-            if (salleService.setActif(salle.get(), true)) {
-                return ResponseEntity.status(200).body("La salle a été activée.");
-            }
-            return ResponseEntity.status(409).body("La salle est déjà active.");
-        }
-        return ResponseEntity.status(404).body("La salle spécifiée n'existe pas.");
     }
 
     @PatchMapping("/get/{id}/desactiver")
-    public ResponseEntity<String> desactiver(@PathVariable Long id) {
-        Optional<Salle> salle = salleService.findById(id);
-
-        if (salle.isPresent()) {
-            if (salleService.setActif(salle.get(), false)) {
-                return ResponseEntity.status(200).body("La salle a été désactivée.");
-            }
-            return ResponseEntity.status(409).body("La salle est déjà inactive.");
-        }
-        return ResponseEntity.status(404).body("La salle spécifiée n'existe pas.");
+    public ResponseEntity<Salle> desactiver(@PathVariable Long id) throws SalleDejaInactiveException {
+        return ResponseEntity.status(HttpStatus.OK).body(salleService.desactiver(id));
     }
 }

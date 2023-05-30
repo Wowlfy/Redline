@@ -5,11 +5,12 @@ import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.repositories.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Component
 public class SalleMapper {
 
     private final SiteRepository siteRepository;
@@ -18,7 +19,7 @@ public class SalleMapper {
         this.siteRepository = siteRepository;
     }
 
-    public Salle salleFromDto(SalleDto salleDto) throws EntityNotFoundException {
+    public Salle createSalleFromDto(SalleDto salleDto) throws EntityNotFoundException {
         Salle nouvelleSalle = new Salle();
         nouvelleSalle.setLibelle(salleDto.getLibelle());
         nouvelleSalle.setDescription(salleDto.getDescription());
@@ -29,5 +30,18 @@ public class SalleMapper {
         }
         nouvelleSalle.setSite(siteOptional.get());
         return nouvelleSalle;
+    }
+
+    public Salle editSalleFromDto(Salle salle, SalleDto salleDto) {
+        if(salleDto.getLibelle() != null) {
+            salle.setLibelle(salleDto.getLibelle());
+        }
+        if(salleDto.getDescription() != null) {
+            salle.setDescription(salleDto.getDescription());
+        }
+        if(salleDto.getNbPlaces() != null) {
+            salle.setNbPlaces(salleDto.getNbPlaces());
+        }
+        return salle;
     }
 }

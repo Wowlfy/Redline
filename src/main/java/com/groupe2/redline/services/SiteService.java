@@ -1,10 +1,10 @@
 package com.groupe2.redline.services;
 
 import com.groupe2.redline.dto.SiteDto;
-import com.groupe2.redline.mappers.SiteMapper;
 import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.exceptions.SiteDejaActifException;
 import com.groupe2.redline.exceptions.SiteDejaInactifException;
+import com.groupe2.redline.mappers.SiteMapper;
 import com.groupe2.redline.repositories.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,63 +26,47 @@ public class SiteService {
     private SiteMapper siteMapper;
 
     public List<Site> getAllSites() {
-        List<Site> sites = this.siteRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
-        return sites;
+        return this.siteRepository.findAll(Sort.by(Sort.Direction.ASC, "libelle"));
     }
 
-    public Site addSite(Site site) {
-        //TODO Gestion des erreurs
-        Site savedSite = this.siteRepository.save(site);
-        return savedSite;
-    }
-
-    public Optional<Site> findById(Long id) {
-        return siteRepository.findById(id);
+    public Site addSite(SiteDto siteDto) {
+        return this.siteRepository.save(siteMapper.createSiteFromDTO(siteDto));
     }
 
     public Site editSite(Long id, SiteDto siteDTO) throws EntityNotFoundException {
-        Optional<Site> editingSite = siteRepository.findById(id);
-        if (editingSite.isEmpty()) {
-            throw new EntityNotFoundException("Le site avec l'ID " + id + " n'existe pas.");
-        }
+        Site site = findSiteOrThrow(id);
 
-        Site updatedSite = siteMapper.editSiteFromDTO(editingSite.get(), siteDTO);
-        Site savedSite = siteRepository.save(updatedSite);
-
-        return savedSite;
+        return siteRepository.save(siteMapper.editSiteFromDTO(site, siteDTO));
     }
 
-    public void activer(Long idSite) throws SiteDejaActifException {
-        Optional<Site> siteOptional = findById(idSite);
+    public Site activer(Long idSite) throws SiteDejaActifException {
+        Site site = findSiteOrThrow(idSite);
 
-        if (siteOptional.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
-        Site site = siteOptional.get();
-
-        if (site.isActif()) {
-            throw new SiteDejaActifException();
-        }
+        if (site.isActif()) throw new SiteDejaActifException("Le site spécifié est déjà actif.");
 
         site.setActif(true);
-        siteRepository.saveAndFlush(site);
+        return siteRepository.saveAndFlush(site);
     }
 
-    public void desactiver(Long idSite) throws SiteDejaInactifException {
-        Optional<Site> siteOptional = findById(idSite);
+    public Site desactiver(Long idSite) throws SiteDejaInactifException {
+        Site site = findSiteOrThrow(idSite);
 
-        if (siteOptional.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
-        Site site = siteOptional.get();
-
-        if (!site.isActif()) {
-            throw new SiteDejaInactifException();
-        }
+        if (!site.isActif()) throw new SiteDejaInactifException("Le site spécifié est déjà inactif.");
 
         site.setActif(false);
-        siteRepository.saveAndFlush(site);
+        return siteRepository.saveAndFlush(site);
+    }
+
+    /**
+     * Récupérer un site par son id, ou lancer une erreur.
+     *
+     * @param id L'id su site recherché
+     * @return La Site
+     * @throws EntityNotFoundException Si l'id ne correspond à aucun site
+     */
+    private Site findSiteOrThrow(Long id) throws EntityNotFoundException {
+        Optional<Site> siteOptional = siteRepository.findById(id);
+        if (siteOptional.isEmpty()) throw new EntityNotFoundException("Le site spécifiée n'existe pas.");
+        return siteOptional.get();
     }
 }
