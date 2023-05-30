@@ -1,13 +1,11 @@
 package com.groupe2.redline.entities;
 
 import jakarta.persistence.*;
-
-import java.io.Serializable;
-import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-public class Roles implements Serializable{
+public class Role{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +13,9 @@ public class Roles implements Serializable{
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "role")
+    private Set<Utilisateur> utilisateurs;
 
 
     public Long getId() {
