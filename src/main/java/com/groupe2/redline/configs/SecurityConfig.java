@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
@@ -68,8 +68,7 @@ public class SecurityConfig {
                 "/swagger-resources/**",
                 "/swagger-ui.html**",
                 "/webjars/**",
-                "favicon.ico",
-                "/**");
+                "favicon.ico");
     }
 
     // Permet de créer un BCrypt Password Encoder et de définir le niveau de hashage
