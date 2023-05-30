@@ -5,6 +5,8 @@ import com.groupe2.redline.exceptions.SalleDejaInactiveException;
 import com.groupe2.redline.exceptions.SiteDejaActifException;
 import com.groupe2.redline.exceptions.SiteDejaInactifException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Intercepte certaines erreurs lancées par les Controllers et renvoie une réponse appropriée au client
@@ -87,11 +90,26 @@ public class ControllerExceptionHandler {
      * @return Erreur 400
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> validationHandler(MethodArgumentNotValidException exception) {
+    public ResponseEntity<List<String>> methodArgumentNotValidHandler(MethodArgumentNotValidException exception) {
         List<ObjectError> errors = exception.getBindingResult().getAllErrors();
         List<String> messages = errors.stream()
                 .map(ObjectError::toString)
                 .toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
     }
+
+    /**
+     * Traiter les exceptions ConstraintViolation comme erreurs 400
+     *
+     * @return Erreur 400
+     */
+    // Axel : Je ne sais pas pourquoi les erreurs de validation ne sont pas toujours du même type... (voir méthode précédente)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<List<String>> contraintViolationHandler(ConstraintViolationException exception) {
+        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+        List<String> messages = violations.stream().map(ConstraintViolation::getMessage).toList();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+    }
+
+
 }

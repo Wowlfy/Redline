@@ -5,12 +5,8 @@ import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Salle;
 import com.groupe2.redline.exceptions.*;
 import com.groupe2.redline.services.SalleService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import com.groupe2.redline.exceptions.CreneauIndisponibleException;
-import com.groupe2.redline.exceptions.SalleInactiveException;
-import com.groupe2.redline.exceptions.SiteInactifException;
-import com.groupe2.redline.services.SalleService;
+import com.groupe2.redline.validation.groups.Creation;
+import com.groupe2.redline.validation.groups.Modification;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,13 +15,14 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/salle")
-
+@Validated
 public class SalleController {
 
 
@@ -42,6 +39,7 @@ public class SalleController {
     }
 
     @PostMapping("/add")
+    @Validated(Creation.class)
     public ResponseEntity<Salle> addSalle(@RequestBody @Valid SalleDto salleDto) {
         try {
             return ResponseEntity.status(201).body(salleService.addSalle(salleDto));
@@ -61,6 +59,7 @@ public class SalleController {
             @ApiResponse(responseCode = "500", description = "Erreur interne")
     })
     @PutMapping(value = "/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Validated(Modification.class)
     public ResponseEntity<Salle> editSalle(@PathVariable Long id, @RequestBody @Valid SalleDto salleDto) throws EntityNotFoundException {
         return ResponseEntity.status(HttpStatus.CREATED).body(salleService.editSalle(id, salleDto));
     }
@@ -71,7 +70,8 @@ public class SalleController {
     }
 
     @PostMapping("/get/{id}/reserver")
-    public ResponseEntity<String> reserver(@RequestBody ReservationDTO reservationDTO) {
+    @Validated(Creation.class)
+    public ResponseEntity<String> reserver(@RequestBody @Valid ReservationDTO reservationDTO) {
         // TODO Associer à une demande (argument optionnel)
         // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
 
