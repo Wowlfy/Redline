@@ -6,7 +6,6 @@ import com.groupe2.redline.entities.Site;
 import com.groupe2.redline.repositories.SiteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
@@ -43,5 +42,15 @@ public class SalleMapper {
             salle.setNbPlaces(salleDto.getNbPlaces());
         }
         return salle;
+    }
+
+    public SalleDto createDtoFromSalle(Salle salle) {
+        SalleDto dto = new SalleDto();
+        dto.setLibelle(salle.getLibelle());
+        dto.setDescription(salle.getDescription());
+        dto.setNbPlaces(salle.getNbPlaces());
+        dto.setSiteId(salle.getSite().getId());
+
+        return dto;
     }
 }

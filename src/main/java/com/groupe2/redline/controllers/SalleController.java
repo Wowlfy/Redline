@@ -13,12 +13,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -100,5 +102,11 @@ public class SalleController {
     @PatchMapping("/get/{id}/desactiver")
     public ResponseEntity<Salle> desactiver(@PathVariable Long id) throws SalleDejaInactiveException {
         return ResponseEntity.status(HttpStatus.OK).body(salleService.desactiver(id));
+    }
+
+    // TODO : Gestion des erreurs comme dans les autres controllers (controller advice)
+    @GetMapping("/rechercher")
+    public ResponseEntity<List<SalleDto>> rechercherSallesDisponibles(@Param("date") Date date, @Param("creneau") int creneau) {
+        return ResponseEntity.ok(salleService.rechercherSallesDisponibles(date, creneau));
     }
 }
