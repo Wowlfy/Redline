@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -98,5 +99,15 @@ public class SalleController {
     @PatchMapping("/get/{id}/desactiver")
     public ResponseEntity<Salle> desactiver(@PathVariable Long id) throws SalleDejaInactiveException {
         return ResponseEntity.status(HttpStatus.OK).body(salleService.desactiver(id));
+    }
+
+    // TODO : Gestion des erreurs comme dans les autres controllers (controller advice)
+    @GetMapping("/rechercher")
+    public ResponseEntity<List<Salle>> rechercherSallesDisponibles() {
+        // TODO : Critères date et créneau.
+        // TODO : Récursion infinie lors de la sérialisation
+        Date dateRecherchee = new Date();
+        int creneauRecherche = 0;
+        return ResponseEntity.ok(salleService.rechercherSallesDisponibles(dateRecherchee, creneauRecherche));
     }
 }

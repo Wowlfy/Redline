@@ -4,11 +4,7 @@ import com.groupe2.redline.dto.ReservationDTO;
 import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
-import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.exceptions.*;
-import com.groupe2.redline.exceptions.CreneauIndisponibleException;
-import com.groupe2.redline.exceptions.SalleInactiveException;
-import com.groupe2.redline.exceptions.SiteInactifException;
 import com.groupe2.redline.mappers.ReservationMapper;
 import com.groupe2.redline.mappers.SalleMapper;
 import com.groupe2.redline.repositories.ReservationRepository;
@@ -18,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,6 +95,11 @@ public class SalleService {
         Salle salle = findSalleOrThrow(id);
 
         return salleRepository.save(salleMapper.editSalleFromDto(salle, salleDto));
+    }
+
+    public List<Salle> rechercherSallesDisponibles(Date dateRecherchee, int creneauRecherche) {
+        List<Salle> salles = salleRepository.rechercherSallesDisponibles(dateRecherchee, creneauRecherche);
+        return salles;
     }
 
     /**
