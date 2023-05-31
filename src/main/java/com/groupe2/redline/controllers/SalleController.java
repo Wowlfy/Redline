@@ -103,11 +103,10 @@ public class SalleController {
 
     // TODO : Gestion des erreurs comme dans les autres controllers (controller advice)
     @GetMapping("/rechercher")
-    public ResponseEntity<List<Salle>> rechercherSallesDisponibles() {
+    public ResponseEntity<List<SalleDto>> rechercherSallesDisponibles() {
         // TODO : Critères date et créneau.
-        // TODO : Récursion infinie lors de la sérialisation
-        Date dateRecherchee = new Date();
-        int creneauRecherche = 0;
-        return ResponseEntity.ok(salleService.rechercherSallesDisponibles(dateRecherchee, creneauRecherche));
+        Date dateDuJour = new Date();
+        int creneauZero = 0;
+        return ResponseEntity.ok(salleService.rechercherSallesDisponibles(dateDuJour, creneauZero));
     }
 }

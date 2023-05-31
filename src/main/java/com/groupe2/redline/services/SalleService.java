@@ -97,9 +97,10 @@ public class SalleService {
         return salleRepository.save(salleMapper.editSalleFromDto(salle, salleDto));
     }
 
-    public List<Salle> rechercherSallesDisponibles(Date dateRecherchee, int creneauRecherche) {
+    public List<SalleDto> rechercherSallesDisponibles(Date dateRecherchee, int creneauRecherche) {
         List<Salle> salles = salleRepository.rechercherSallesDisponibles(dateRecherchee, creneauRecherche);
-        return salles;
+        List<SalleDto> dtos = salles.stream().map(salleMapper::createDtoFromSalle).toList();
+        return dtos;
     }
 
     /**

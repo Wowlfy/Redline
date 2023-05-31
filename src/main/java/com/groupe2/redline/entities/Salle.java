@@ -8,77 +8,77 @@ import java.util.Set;
 @Table(name = "salle")
 public class Salle {
 
-        @Id
-        @GeneratedValue
-        private Long id;
-        @Column(name = "libelle")
-        private String libelle;
-        @Column(name = "description")
-        private String description;
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(name = "libelle")
+    private String libelle;
+    @Column(name = "description")
+    private String description;
 
-        @Column(name = "nb_places")
-        private int nbPlaces;
+    @Column(name = "nb_places")
+    private int nbPlaces;
 
-        public int getNbPlaces() {
-                return nbPlaces;
-        }
+    @Column(name = "actif")
+    private boolean actif;
 
-        public void setNbPlaces(int nbPlaces) {
-                this.nbPlaces = nbPlaces;
-        }
+    @ManyToOne
+    @JoinColumn(name = "id_site")
+    private Site site;
+    @OneToMany(mappedBy = "salle")
+    private Set<Reservation> reservations;
 
-        public Site getSite() {
-                return site;
-        }
+    public int getNbPlaces() {
+        return nbPlaces;
+    }
 
-        public void setSite(Site site) {
-                this.site = site;
-        }
+    public void setNbPlaces(int nbPlaces) {
+        this.nbPlaces = nbPlaces;
+    }
 
-        public Set<Reservation> getReservations() {
-                return reservations;
-        }
+    public Site getSite() {
+        return site;
+    }
 
-        public void setReservations(Set<Reservation> reservations) {
-                this.reservations = reservations;
-        }
+    public void setSite(Site site) {
+        this.site = site;
+    }
 
-        @Column(name = "actif")
-        private boolean actif;
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
 
-        @ManyToOne
-        @JoinColumn(name = "id_site")
-        private Site site;
-        @OneToMany(mappedBy = "salle")
-        private Set<Reservation> reservations;
-
-
-        public Long getId() {
-                return id;
-        }
-
-        public String getLibelle() {
-                return libelle;
-        }
-
-        public void setLibelle(String libelle) {
-                this.libelle = libelle;
-        }
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
 
 
-        public String getDescription() {
-                return description;
-        }
+    public Long getId() {
+        return id;
+    }
 
-        public void setDescription(String description) {
-                this.description = description;
-        }
+    public String getLibelle() {
+        return libelle;
+    }
 
-        public boolean isActif() {
-                return actif;
-        }
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
 
-        public void setActif(boolean actif) {
-                this.actif = actif;
-        }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isActif() {
+        return actif;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
+    }
 }
