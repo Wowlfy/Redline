@@ -34,7 +34,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     // Permet d'intercepter la requête afin de vérifier qu'elle contient bien un token valide dans ses headers
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         // Récupération de la valeur associé à la clé AUTHORIZATION dans le header
-        String header = request.getHeaders(HttpHeaders.AUTHORIZATION).nextElement();
+        String header;
+        try {
+            header = request.getHeaders(HttpHeaders.AUTHORIZATION).nextElement();
+        }catch (Exception e){
+            throw new JwtException("Authorization header missing");
+        }
         // Si aucune Authorization trouvé dans le header ou si il s'agit d'un autre type de token qu'un JWT (Bearer), alors throw JwtException
         if (null == header || !header.startsWith("Bearer")) {
             throw new JwtException("Header with Authorization not found");
