@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -105,10 +106,7 @@ public class SalleController {
 
     // TODO : Gestion des erreurs comme dans les autres controllers (controller advice)
     @GetMapping("/rechercher")
-    public ResponseEntity<List<SalleDto>> rechercherSallesDisponibles() {
-        // TODO : Critères date et créneau.
-        Date dateDuJour = new Date();
-        int creneauZero = 0;
-        return ResponseEntity.ok(salleService.rechercherSallesDisponibles(dateDuJour, creneauZero));
+    public ResponseEntity<List<SalleDto>> rechercherSallesDisponibles(@Param("date") Date date, @Param("creneau") int creneau) {
+        return ResponseEntity.ok(salleService.rechercherSallesDisponibles(date, creneau));
     }
 }
