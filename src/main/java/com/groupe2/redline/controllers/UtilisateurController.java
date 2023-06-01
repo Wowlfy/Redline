@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class UtilisateurController {
     }
 
     @PostMapping("/add")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Utilisateur> addUtilisateur(@RequestBody @Valid UtilisateurDto utilisateurDto) throws EntityNotFoundException {
         return ResponseEntity.ok(utilisateurService.addUtilisateur(utilisateurDto));
     }

@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class SiteController {
     }
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured({"EXTERNE", "ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<List<Site>> getSites() {
         return ResponseEntity.status(HttpStatus.OK).body(siteService.getAllSites());
     }
@@ -45,6 +47,7 @@ public class SiteController {
     })
     @Validated(Creation.class)
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Site> addSite(@RequestBody @Valid SiteDto siteDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(siteService.addSite(siteDto));
     }
@@ -56,16 +59,19 @@ public class SiteController {
     })
     @PutMapping(value = "/get/{id}/edit", produces = MediaType.APPLICATION_JSON_VALUE)
     @Validated(Modification.class)
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody @Valid SiteDto siteDTO) throws EntityNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(siteService.editSite(id, siteDTO));
     }
 
     @PatchMapping("/get/{id}/activer")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Site> activer(@PathVariable Long id) throws SiteDejaActifException {
         return ResponseEntity.status(HttpStatus.OK).body(siteService.activer(id));
     }
 
     @PatchMapping("/get/{id}/desactiver")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Site> desactiver(@PathVariable Long id) throws SiteDejaInactifException {
         return ResponseEntity.status(HttpStatus.OK).body(siteService.desactiver(id));
     }
