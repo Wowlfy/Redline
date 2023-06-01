@@ -1,5 +1,6 @@
 package com.groupe2.redline.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -21,10 +22,12 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "id_salle")
+    @JsonBackReference("salle-reservation")
     private Salle salle;
 
     @ManyToOne
     @JoinColumn(name = "id_utilisateur")
+    @JsonBackReference("utilisateur-reservations")
     private Utilisateur utilisateur;
 
     @OneToOne

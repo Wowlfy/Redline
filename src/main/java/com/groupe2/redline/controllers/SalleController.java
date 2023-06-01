@@ -2,8 +2,11 @@ package com.groupe2.redline.controllers;
 
 import com.groupe2.redline.dto.ReservationDTO;
 import com.groupe2.redline.dto.SalleDto;
+import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
+import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.exceptions.*;
+import com.groupe2.redline.repositories.UtilisateurRepository;
 import com.groupe2.redline.services.SalleService;
 import com.groupe2.redline.validation.groups.Creation;
 import com.groupe2.redline.validation.groups.Modification;
@@ -21,6 +24,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -32,9 +36,11 @@ public class SalleController {
 
 
     private final SalleService salleService;
+    private final UtilisateurRepository utilisateurRepository;
 
-    public SalleController(SalleService salleService) {
+    public SalleController(SalleService salleService, UtilisateurRepository utilisateurRepository) {
         this.salleService = salleService;
+        this.utilisateurRepository = utilisateurRepository;
     }
 
     @GetMapping("/get")
@@ -70,22 +76,12 @@ public class SalleController {
     @PostMapping("/get/{id}/reserver")
     @Validated(Creation.class)
     @Secured({"EXTERNE", "ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<String> reserver(@RequestBody @Valid ReservationDTO reservationDTO) {
+    public ResponseEntity<Reservation> reserver(@RequestBody @Valid ReservationDTO reservationDTO, @PathVariable("id") Salle salle, Principal principal) throws CreneauIndisponibleException, SalleInactiveException, SiteInactifException {
         // TODO Associer à une demande (argument optionnel)
-        // TODO Récupérer automatiquement l'utilisateur connecté (nécessite d'implémenter l'authentification)
 
-        try {
-            salleService.reserver(reservationDTO);
-            return ResponseEntity.status(201).body("Réservation enregistrée.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        } catch (SalleInactiveException e) {
-            return ResponseEntity.status(409).body("La salle spécifiée est inactive.");
-        } catch (SiteInactifException e) {
-            return ResponseEntity.status(409).body("Le site dans lequel est situé la salle spécifiée est inactif.");
-        } catch (CreneauIndisponibleException e) {
-            return ResponseEntity.status(409).body("Une réservation existe déjà sur ce créneau.");
-        }
+        Utilisateur utilisateurConnecte = utilisateurRepository.findByMail(principal.getName()).orElseThrow(EntityNotFoundException::new);
+
+        return ResponseEntity.ok(salleService.reserver(reservationDTO, utilisateurConnecte, salle));
     }
 
     @PatchMapping("/get/{id}/activer")

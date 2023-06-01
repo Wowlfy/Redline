@@ -4,6 +4,7 @@ import com.groupe2.redline.dto.ReservationDTO;
 import com.groupe2.redline.dto.SalleDto;
 import com.groupe2.redline.entities.Reservation;
 import com.groupe2.redline.entities.Salle;
+import com.groupe2.redline.entities.Utilisateur;
 import com.groupe2.redline.exceptions.*;
 import com.groupe2.redline.mappers.ReservationMapper;
 import com.groupe2.redline.mappers.SalleMapper;
@@ -23,23 +24,14 @@ import java.util.Optional;
 public class SalleService {
 
     private final SalleMapper salleMapper;
-
-
     private final SalleRepository salleRepository;
-
-
     private final ReservationRepository reservationRepository;
-
-
-    private final UtilisateurService utilisateurService;
-
     private final ReservationMapper reservationMapper;
 
-    public SalleService(SalleMapper salleMapper, SalleRepository salleRepository, ReservationRepository reservationRepository, UtilisateurService utilisateurService, ReservationMapper reservationMapper) {
+    public SalleService(SalleMapper salleMapper, SalleRepository salleRepository, ReservationRepository reservationRepository, ReservationMapper reservationMapper) {
         this.salleMapper = salleMapper;
         this.salleRepository = salleRepository;
         this.reservationRepository = reservationRepository;
-        this.utilisateurService = utilisateurService;
         this.reservationMapper = reservationMapper;
     }
 
@@ -61,14 +53,18 @@ public class SalleService {
     /**
      * Tente d'enregistrer une réservation
      *
-     * @param idSalle  L'id de la salle concernée
-     * @param date     La date à laquelle réserver la salle
-     * @param creneau  Le créneau sur lequel réserver la salle
-     * @param idAuteur L'id de l'utilisateur effectuant la réservation
+     * @param salle  L'id de la salle concernée
+     * @param reservationDto     DTO Contenant date + créneau
+     * @param auteur  L'auteur de la réservation (injecté par spring)
      */
-    public void reserver(ReservationDTO reservationDto) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException, SiteInactifException {
-        Reservation updatedReservation = reservationMapper.createReservationFromDto(reservationDto);
-        reservationRepository.saveAndFlush(updatedReservation);
+    public Reservation reserver(ReservationDTO reservationDto, Utilisateur auteur, Salle salle) throws CreneauIndisponibleException, SalleInactiveException, EntityNotFoundException, SiteInactifException {
+        Reservation nouvelleReservation = reservationMapper.createReservationFromDto(reservationDto);
+        if (!salle.isActif()) throw new SalleInactiveException();
+        if (!salle.getSite().isActif()) throw new SiteInactifException();
+        nouvelleReservation.setSalle(salle);
+        nouvelleReservation.setUtilisateur(auteur);
+
+        return reservationRepository.saveAndFlush(nouvelleReservation);
     }
 
     public Salle activer(Long idSalle) throws SalleDejaActiveException, EntityNotFoundException {
