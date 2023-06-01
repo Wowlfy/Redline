@@ -1,5 +1,6 @@
 package com.groupe2.redline.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -26,6 +27,7 @@ public class Salle {
     @JoinColumn(name = "id_site")
     private Site site;
     @OneToMany(mappedBy = "salle")
+    @JsonManagedReference("salle-reservation")
     private Set<Reservation> reservations;
 
     public int getNbPlaces() {

@@ -1,9 +1,6 @@
 package com.groupe2.redline.controllers;
 
-import com.groupe2.redline.exceptions.SalleDejaActiveException;
-import com.groupe2.redline.exceptions.SalleDejaInactiveException;
-import com.groupe2.redline.exceptions.SiteDejaActifException;
-import com.groupe2.redline.exceptions.SiteDejaInactifException;
+import com.groupe2.redline.exceptions.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -81,6 +78,16 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(SalleDejaActiveException.class)
     public ResponseEntity<String> salleDejaActiveHandler(SalleDejaActiveException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    /**
+     * Traiter les exceptions SalleDejaActive comme erreurs 409
+     *
+     * @return Erreur 409
+     */
+    @ExceptionHandler(CreneauIndisponibleException.class)
+    public ResponseEntity<String> salleDejaActiveHandler(CreneauIndisponibleException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 

@@ -1,5 +1,6 @@
 package com.groupe2.redline.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,7 @@ public class Utilisateur implements UserDetails {
     private String motDePasse;
 
     @OneToMany(mappedBy = "utilisateur")
+    @JsonManagedReference("utilisateur-reservations")
     private Set<Reservation> reservations;
 
     @ManyToOne
