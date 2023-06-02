@@ -92,6 +92,17 @@ public class ControllerExceptionHandler {
     }
 
     /**
+     *  Traiter les exceptions UtilisateurDejaPresent comme erreurs 409
+     *
+     * @return Erreur 409
+     */
+    @ExceptionHandler(UtilisateurDejaPresentException.class)
+    public ResponseEntity<String> utilisateurDejaPresentHandler(UtilisateurDejaPresentException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+
+    /**
      * Traiter les exceptions MethodArgumentNotValid comme erreurs 400
      *
      * @return Erreur 400
@@ -117,6 +128,4 @@ public class ControllerExceptionHandler {
         List<String> messages = violations.stream().map(ConstraintViolation::getMessage).toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
     }
-
-
 }

@@ -2,9 +2,9 @@ package com.groupe2.redline.controllers;
 
 import com.groupe2.redline.dto.UtilisateurDto;
 import com.groupe2.redline.entities.Utilisateur;
+import com.groupe2.redline.exceptions.UtilisateurDejaPresentException;
 import com.groupe2.redline.services.UtilisateurService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -27,7 +27,7 @@ public class UtilisateurController {
 
     @PostMapping("/add")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<Utilisateur> addUtilisateur(@RequestBody @Valid UtilisateurDto utilisateurDto) throws EntityNotFoundException {
-        return ResponseEntity.ok(utilisateurService.addUtilisateur(utilisateurDto));
+    public ResponseEntity<Utilisateur> addUtilisateur(@RequestBody @Valid UtilisateurDto utilisateurDto) throws UtilisateurDejaPresentException {
+            return ResponseEntity.ok(utilisateurService.addUtilisateur(utilisateurDto));
     }
 }
