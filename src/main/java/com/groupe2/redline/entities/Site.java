@@ -1,5 +1,6 @@
 package com.groupe2.redline.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -12,6 +13,7 @@ public class Site {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany(mappedBy = "site")
+    @JsonManagedReference("site-salle")
     private Set<Salle> salles;
 
     @Column(name = "libelle")
@@ -60,5 +62,13 @@ public class Site {
 
     public void setActif(boolean actif) {
         this.actif = actif;
+    }
+
+    public Set<Salle> getSalles() {
+        return salles;
+    }
+
+    public void setSalles(Set<Salle> salles) {
+        this.salles = salles;
     }
 }
